@@ -9,7 +9,14 @@ let {CloudinaryStorage}= require("multer-storage-cloudinary");
 require("dotenv").config();
 
 let app = express();
-app.use(cors());
+app.use(cors({
+  origin: [
+    "http://localhost:5173",
+    "http://localhost:3000",
+    "https://*.vercel.app"
+  ],
+  credentials: true
+}));
 app.use(express.json());
 //app.use('/uploads', express.static('uploads'));
 

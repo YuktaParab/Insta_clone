@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import "./Styles.css";
 
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3000";
 
 function ShowPost(props){
   const [files, setFiles] = useState([]);
@@ -16,7 +17,7 @@ function ShowPost(props){
 
   const fetchFiles = () => {
     axios
-      .get("http://localhost:3000/files")
+      .get(`${API_URL}/files`)
       .then((response) => {
         setFiles(response.data);
       })
@@ -27,7 +28,7 @@ function ShowPost(props){
 
   const handleDelete = (id) => {
     axios
-      .delete(`http://localhost:3000/delete/${id}`)
+      .delete(`${API_URL}/delete/${id}`)
       .then(() => {
         fetchFiles();
       })

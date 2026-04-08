@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import axios from "axios";
 import "./Styles.css";
 
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3000";
+
 function CreatePost(props){
   const [file, setFile] = useState(null);
   const [username, setUsername] = useState("");
@@ -25,7 +27,7 @@ function CreatePost(props){
     formData.append("caption", caption);
 
     try {
-      await axios.post("http://localhost:3000/upload", formData, {
+      await axios.post(`${API_URL}/upload`, formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
       setMessage("Post created successfully!");

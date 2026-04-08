@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import axios from "axios";
 import "./Styles.css";
 
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3000";
+
 function SearchUser(){
   const [username, setUsername] = useState("");
   const [searchResults, setSearchResults] = useState([]);
@@ -15,7 +17,7 @@ function SearchUser(){
     }
 
     axios
-      .get(`http://localhost:3000/files?username=${username}`)
+      .get(`${API_URL}/files?username=${username}`)
       .then((response) => {
         setSearchResults(response.data);
         setError("");
