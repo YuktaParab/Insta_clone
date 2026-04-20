@@ -1,45 +1,129 @@
-import React, { useState } from "react";
-import CreatePost from "./components/CreatePost";
-import ShowPost from "./components/ShowPost";
-import SearchUser from "./components/SearchUser";
-import Click from "./components/Click"; 
-import "./components/Styles.css";
-import { TiSocialInstagramCircular } from "react-icons/ti";
-import { BsCameraFill } from "react-icons/bs";
-const App = () => {
-  const [showCreate, setShowCreate] = useState(false);
-  const [showSearchUser, setShowSearchUser] = useState(false);
-  const [showClick, setShowClick] = useState(false);
-  const [refreshTrigger, setRefreshTrigger] = useState(0);
+import React, { useContext } from 'react';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { AuthProvider, AuthContext } from './context/AuthContext';
+import Navbar from './components/Navbar';
+import ProtectedRoute from './components/ProtectedRoute';
 
-  const toggleCreatePost = () => setShowCreate((prev) => !prev);
-  const refreshPosts = () => setRefreshTrigger((prev) => prev + 1);
-  const toggleSearchUser = () => setShowSearchUser((prev) => !prev);
-  const toggleClick = () => setShowClick((prev) => !prev); 
+// Pages
+import Login from './pages/Login';
+import Signup from './pages/Signup';
+import Feed from './pages/Feed';
+import Upload from './pages/Upload';
+import Chat from './pages/Chat';
+import Profile from './pages/Profile';
+import Search from './pages/Search';
+import Notifications from './pages/Notifications';
+import YourActivity from './pages/YourActivity';
 
+// Layout wrapper for protected routes
+const MainLayout = ({ children }) => {
   return (
-    <div className="app-container">
-      <header className="app-header">
-        <h1>
-          <span className="Ti"><TiSocialInstagramCircular /></span>
-          <span className="logo">InstaVibe</span>
-        </h1>
-      </header>
-
-      <main>
-        <div className="action-buttons">
-          <button className="plus-button" onClick={toggleCreatePost}>+</button>  
-          <button className="search-user-button" onClick={toggleSearchUser}>🔍</button>
-          <button className="camera-button" onClick={toggleClick}><BsCameraFill/></button>
-        </div>
-
-        {showCreate && <CreatePost setRefreshTrigger={setRefreshTrigger} />}
-        {showSearchUser && <SearchUser />}
-        {showClick && <Click onClose={toggleClick} onUpload={refreshPosts} />} 
-
-        <ShowPost refreshTrigger={refreshTrigger} />
-      </main>
+    <div className="flex h-screen bg-gray-50 overflow-hidden">
+      <Navbar />
+      <div className="flex-1 overflow-y-auto md:ml-20 lg:ml-64 pt-16 md:pt-0 pb-16 md:pb-0">
+        {children}
+      </div>
     </div>
+  );
+};
+
+const App = () => {
+  return (
+    <AuthProvider>
+      <Router>
+        <Routes>
+          {/* Public Routes */}
+          <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<Signup />} />
+
+          {/* Protected Routes */}
+          <Route 
+            path="/" 
+            element={
+              <ProtectedRoute>
+                <MainLayout>
+                  <Feed />
+                </MainLayout>
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/upload" 
+            element={
+              <ProtectedRoute>
+                <MainLayout>
+                  <Upload />
+                </MainLayout>
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/chat" 
+            element={
+              <ProtectedRoute>
+                <MainLayout>
+                  <Chat />
+                </MainLayout>
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/profile" 
+            element={
+              <ProtectedRoute>
+                <MainLayout>
+                  <Profile />
+                </MainLayout>
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/profile/:username" 
+            element={
+              <ProtectedRoute>
+                <MainLayout>
+                  <Profile />
+                </MainLayout>
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/search" 
+            element={
+              <ProtectedRoute>
+                <MainLayout>
+                  <Search />
+                </MainLayout>
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/notifications" 
+            element={
+              <ProtectedRoute>
+                <MainLayout>
+                  <Notifications />
+                </MainLayout>
+              </ProtectedRoute>
+            } 
+          />
+          
+          <Route 
+            path="/activity" 
+            element={
+              <ProtectedRoute>
+                <MainLayout>
+                  <YourActivity />
+                </MainLayout>
+              </ProtectedRoute>
+            } 
+          />
+          
+          {/* Fallback */}
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
+      </Router>
+    </AuthProvider>
   );
 };
 
